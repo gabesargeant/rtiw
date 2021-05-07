@@ -18,7 +18,7 @@ func (s *sphere) sphere(cen vec3, r float64) {
 	s.radius = r
 }
 
-func (s *sphere) hitFunc(r ray, tMin float64, tMax float64, rec *hitRecord) (bool,*hitRecord ) {
+func (s *sphere) hitFunc(r ray, tMin float64, tMax float64, rec *hitRecord) (bool, *hitRecord) {
 
 	oc := r.origin()
 	oc = oc.minus(s.center)

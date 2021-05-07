@@ -23,7 +23,7 @@ func (h *hitTableList) hitFunc(r ray, tMin float64, tMax float64, rec *hitRecord
 	closestSoFar := tMax
 
 	for i := 0; i < len(h.list); i++ {
-		
+
 		hit, rec = h.list[i].hitFunc(r, tMin, closestSoFar, &tmpRec)
 		if hit {
 			hitAnything = true

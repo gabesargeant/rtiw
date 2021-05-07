@@ -29,7 +29,7 @@ func (v *vec3) plus(v2 vec3) vec3 {
 func (v *vec3) minus(v2 vec3) vec3 {
 	rtn := vec3{}
 	rtn.vec3(v.e[0]-v2.e[0], v.e[1]-v2.e[1], v.e[2]-v2.e[2])
-	
+
 	return rtn
 }
 

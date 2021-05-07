@@ -7,6 +7,7 @@ import (
 	"image/color"
 	"image/png"
 	"math"
+	"math/rand"
 	"os"
 )
 
@@ -14,24 +15,15 @@ func outputImage(filename string) {
 
 	width := 200
 	height := 100
+	ns := 100
 
 	upLeft := image.Point{0, 0}
 	lowRight := image.Point{width, height}
 	image := image.NewRGBA(image.Rectangle{upLeft, lowRight})
 
-	lowerLeftCorner := vec3{}
-	lowerLeftCorner.vec3(-2.0, -1.0, -1.0)
-
-	horizontal := vec3{}
-	horizontal.vec3(4.0, 0.0, 0.0)
-
-	vertical := vec3{}
-	vertical.vec3(0.0, 2.0, 0.0)
-
-	origin := vec3{}
-	origin.vec3(0.0, 0.0, 0.0)
-
 	world := new(hitTableList)
+	cam := camera{}
+	cam.camera()
 
 	s1 := &sphere{}
 	s1v := vec3{}
@@ -52,19 +44,22 @@ func outputImage(filename string) {
 
 	for y := height; y >= 0; y-- {
 		for x := 0; x < width; x++ {
+			col := vec3{}
+			col.vec3(0,0,0)
+			for a := 0; a < ns; a++ {
+				ur := rand.Float64()
+				vr := rand.Float64()
+			//	fmt.Println("ur ", ur,  "  vr ", vr)
+				u := (float64(x) + ur) / float64(width)
+				v := (float64(y) + vr) / float64(height)
 
-			u := float64(x) / float64(width)
-			v := float64(y) / float64(height)
+				r := cam.getRay(u, v)
+				r.pointAtParameter(2.0)
 
-			//bodmas
-			hoz := horizontal.multiplyT(u)
-			vert := vertical.multiplyT(v)
-			llc := lowerLeftCorner.plus(hoz)
-			llc = llc.plus(vert)
-			r := ray{}
-			r.ray(origin, llc)
+				col.plusEq(colour(r, world))
 
-			col := colour(r, world)
+			}
+			col = col.divideT(float64(ns))
 
 			ir := uint8(255.99 * col.e[0])
 			ig := uint8(255.99 * col.e[1])
@@ -88,7 +83,7 @@ func outputImage(filename string) {
 }
 
 func colour(r ray, world *hitTableList) vec3 {
-	
+
 	rec := &hitRecord{}
 	hit, rec := world.hitFunc(r, 0.0, math.MaxFloat64, rec)
 
