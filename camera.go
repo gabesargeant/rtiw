@@ -24,3 +24,4 @@ func (c *camera) getRay(u float64, v float64) ray {
 	r.ray(c.origin, llc)
 	return r
 }
+

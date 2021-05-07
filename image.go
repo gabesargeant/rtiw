@@ -49,7 +49,6 @@ func outputImage(filename string) {
 			for a := 0; a < ns; a++ {
 				ur := rand.Float64()
 				vr := rand.Float64()
-			//	fmt.Println("ur ", ur,  "  vr ", vr)
 				u := (float64(x) + ur) / float64(width)
 				v := (float64(y) + vr) / float64(height)
 
@@ -60,6 +59,10 @@ func outputImage(filename string) {
 
 			}
 			col = col.divideT(float64(ns))
+
+			col.e[0] = math.Sqrt(col.e[0])
+			col.e[1] = math.Sqrt(col.e[1])
+			col.e[2] = math.Sqrt(col.e[2])
 
 			ir := uint8(255.99 * col.e[0])
 			ig := uint8(255.99 * col.e[1])
@@ -85,14 +88,16 @@ func outputImage(filename string) {
 func colour(r ray, world *hitTableList) vec3 {
 
 	rec := &hitRecord{}
-	hit, rec := world.hitFunc(r, 0.0, math.MaxFloat64, rec)
+	hit, rec := world.hitFunc(r, 0.001, math.MaxFloat64, rec)
 
 	if hit {
-
-		a := vec3{}
-
-		a.vec3(rec.normal.x()+1, rec.normal.y()+1, rec.normal.z()+1)
-		return a.multiplyT(0.5)
+		target := rec.p.plus(rec.normal.plus(randomInInitSphere()))
+		
+		rr := ray{}
+		rr.ray(rec.p, target.minus(rec.p))
+		rtn := colour(rr, world)
+		
+		return rtn.multiplyT(0.5)
 	}
 
 	unitDirection := unitVector(r.direction())
@@ -108,21 +113,24 @@ func colour(r ray, world *hitTableList) vec3 {
 
 }
 
-// func hitSphere(center vec3, radius float64, r ray) float64 {
-// 	origin := r.origin()
-// 	oc := origin.minus(center)
-// 	a := dot(r.direction(), r.direction())
-// 	b := dot(oc, r.direction())
-// 	c := dot(oc, oc) - radius*radius
-// 	discriminant := b*b - 4*a*c
+func randomInInitSphere() vec3 {
+	p := vec3{}
+	for {
 
-// 	if discriminant < 0 {
-// 		return -1.0
-// 	}
+		a:= vec3{}
+		a.vec3(rand.Float64(),rand.Float64(),rand.Float64())
+		b:= vec3{}
+		b.vec3(1,1,1)
+		c := a.minus(b)
+		p = c.multiplyT(2.0)
 
-// 	return (-b - math.Sqrt(discriminant)/(2.0*a))
-
-// }
+		if p.squaredLength() >= 1.0 {
+			break;
+		}
+		
+	}
+	return p
+}
 
 func createOutputDirectory(outDir string) {
 
