@@ -7,15 +7,17 @@ import (
 type sphere struct {
 	center vec3
 	radius float64
+	material material
 }
 
 func (s *sphere) getCenter() vec3 {
 	return s.center
 }
 
-func (s *sphere) sphere(cen vec3, r float64) {
+func (s *sphere) sphere(cen vec3, r float64, m material) {
 	s.center = cen
 	s.radius = r
+	s.material = m
 }
 
 func (s *sphere) hitFunc(r ray, tMin float64, tMax float64, rec *hitRecord) (bool, *hitRecord) {

@@ -28,13 +28,40 @@ func outputImage(filename string) {
 	s1 := &sphere{}
 	s1v := vec3{}
 	s1v.vec3(0, 0, -1)
-	s1.sphere(s1v, 0.5)
+	m1 := lambertain{}
+	m1v := vec3{}
+	m1v.vec3(0.8,0.3,0.3)
+	m1.lambertain(m1v)
+	s1.sphere(s1v, 0.5, &m1)
+	//
 	s2 := &sphere{}
 	s2v := vec3{}
 	s2v.vec3(0, -100.5, -1)
-	s2.sphere(s2v, 100)
+	m2 := lambertain{}
+	m2v := vec3{}
+	m2v.vec3(0.8,0.8,0.0)
+	m2.lambertain(m2v)
+	s2.sphere(s2v, 100, &m2)
+	//
+	s3 := &sphere{}
+	s3v := vec3{}
+	s3v.vec3(1, 0, -1)
+	m3 := lambertain{}
+	m3v := vec3{}
+	m3v.vec3(0.8,0.6,0.2)
+	m3.lambertain(m3v)
+	s3.sphere(s3v, 0.5, &m3)
+	//
+	s4 := &sphere{}
+	s4v := vec3{}
+	s4v.vec3(-1, 0, -1)
+	m4 := lambertain{}
+	m4v := vec3{}
+	m4v.vec3(0.8,0.3,0.3)
+	m4.lambertain(m4v)
+	s4.sphere(s4v, 0.5, &m4)
 
-	list := []hitTable{s1, s2}
+	list := []hitTable{s1, s2, s3, s4}
 
 	world.list = list
 	fmt.Println(len(world.list))
@@ -85,19 +112,23 @@ func outputImage(filename string) {
 
 }
 
-func colour(r ray, world *hitTableList) vec3 {
+func colour(r ray, world *hitTableList, depth int) vec3 {
 
 	rec := &hitRecord{}
 	hit, rec := world.hitFunc(r, 0.001, math.MaxFloat64, rec)
+	
 
 	if hit {
-		target := rec.p.plus(rec.normal.plus(randomInInitSphere()))
-		
-		rr := ray{}
-		rr.ray(rec.p, target.minus(rec.p))
-		rtn := colour(rr, world)
-		
-		return rtn.multiplyT(0.5)
+
+		scattered := ray{}
+		attenuation := vec3{}
+		if(depth < 50 && rec.matPtr.scatter(r, rec, &attenuation, &scattered)){
+			return attenuation.mult(colour(scattered, world, depth+1))
+		}else{
+			tmp := vec3{}
+			tmp.vec3(0,0,0)
+			return tmp
+		}
 	}
 
 	unitDirection := unitVector(r.direction())

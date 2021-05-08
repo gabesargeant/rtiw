@@ -4,6 +4,7 @@ type hitRecord struct {
 	t      float64
 	p      vec3
 	normal vec3
+	matPtr material
 }
 
 type hitTable interface {
