@@ -30,36 +30,36 @@ func outputImage(filename string) {
 	s1v.vec3(0, 0, -1)
 	m1 := lambertain{}
 	m1v := vec3{}
-	m1v.vec3(0.8,0.3,0.3)
+	m1v.vec3(0.8, 0.3, 0.3)
 	m1.lambertain(m1v)
-	s1.sphere(s1v, 0.5, &m1)
+	s1.sphere(s1v, 0.5, m1)
 	//
 	s2 := &sphere{}
 	s2v := vec3{}
 	s2v.vec3(0, -100.5, -1)
 	m2 := lambertain{}
 	m2v := vec3{}
-	m2v.vec3(0.8,0.8,0.0)
+	m2v.vec3(0.8, 0.8, 0.0)
 	m2.lambertain(m2v)
-	s2.sphere(s2v, 100, &m2)
+	s2.sphere(s2v, 100, m2)
 	//
 	s3 := &sphere{}
 	s3v := vec3{}
 	s3v.vec3(1, 0, -1)
-	m3 := lambertain{}
+	m3 := metal{}
 	m3v := vec3{}
-	m3v.vec3(0.8,0.6,0.2)
-	m3.lambertain(m3v)
-	s3.sphere(s3v, 0.5, &m3)
+	m3v.vec3(0.8, 0.6, 0.2)
+	m3.metal(m3v)
+	s3.sphere(s3v, 0.5, m3)
 	//
 	s4 := &sphere{}
 	s4v := vec3{}
 	s4v.vec3(-1, 0, -1)
-	m4 := lambertain{}
+	m4 := metal{}
 	m4v := vec3{}
-	m4v.vec3(0.8,0.3,0.3)
-	m4.lambertain(m4v)
-	s4.sphere(s4v, 0.5, &m4)
+	m4v.vec3(0.8, 0.3, 0.3)
+	m4.metal(m4v)
+	s4.sphere(s4v, 0.5, m4)
 
 	list := []hitTable{s1, s2, s3, s4}
 
@@ -72,7 +72,7 @@ func outputImage(filename string) {
 	for y := height; y >= 0; y-- {
 		for x := 0; x < width; x++ {
 			col := vec3{}
-			col.vec3(0,0,0)
+			col.vec3(0, 0, 0)
 			for a := 0; a < ns; a++ {
 				ur := rand.Float64()
 				vr := rand.Float64()
@@ -82,7 +82,7 @@ func outputImage(filename string) {
 				r := cam.getRay(u, v)
 				r.pointAtParameter(2.0)
 
-				col.plusEq(colour(r, world))
+				col.plusEq(colour(r, world, 0))
 
 			}
 			col = col.divideT(float64(ns))
@@ -116,17 +116,19 @@ func colour(r ray, world *hitTableList, depth int) vec3 {
 
 	rec := &hitRecord{}
 	hit, rec := world.hitFunc(r, 0.001, math.MaxFloat64, rec)
-	
 
 	if hit {
-
+		hit := false
 		scattered := ray{}
 		attenuation := vec3{}
-		if(depth < 50 && rec.matPtr.scatter(r, rec, &attenuation, &scattered)){
+		 
+		hit, scattered, attenuation = rec.matPtr.scatter(r, rec, attenuation, scattered)
+
+		if depth < 50 && hit {
 			return attenuation.mult(colour(scattered, world, depth+1))
-		}else{
+		} else {
 			tmp := vec3{}
-			tmp.vec3(0,0,0)
+			tmp.vec3(0, 0, 0)
 			return tmp
 		}
 	}
@@ -148,17 +150,17 @@ func randomInInitSphere() vec3 {
 	p := vec3{}
 	for {
 
-		a:= vec3{}
-		a.vec3(rand.Float64(),rand.Float64(),rand.Float64())
-		b:= vec3{}
-		b.vec3(1,1,1)
+		a := vec3{}
+		a.vec3(rand.Float64(), rand.Float64(), rand.Float64())
+		b := vec3{}
+		b.vec3(1, 1, 1)
 		c := a.minus(b)
 		p = c.multiplyT(2.0)
 
 		if p.squaredLength() >= 1.0 {
-			break;
+			break
 		}
-		
+
 	}
 	return p
 }
