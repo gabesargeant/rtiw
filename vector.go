@@ -34,9 +34,9 @@ func (v *vec3) minus(v2 vec3) vec3 {
 }
 
 func (v *vec3) mult(v2 vec3) vec3 {
-	return vec3{
-		e: []float64{v.e[0] * v2.e[0], v.e[1] * v2.e[1], v.e[2] * v2.e[2]},
-	}
+	rtn := vec3{}
+	rtn.vec3(v.e[0]*v2.e[0], v.e[1]*v2.e[1], v.e[2]*v2.e[2])
+	return rtn
 }
 
 func (v *vec3) div(v2 vec3) vec3 {
@@ -70,9 +70,9 @@ func (v *vec3) indexP(i int) *float64 { return &v.e[i] }
 
 // +=
 func (v *vec3) plusEq(v2 vec3) {
-	v.e[0] = v.e[0] + v2.e[0]
-	v.e[1] = v.e[1] + v2.e[1]
-	v.e[2] = v.e[2] + v2.e[2]
+	v.e[0] += v2.e[0]
+	v.e[1] += v2.e[1]
+	v.e[2] += v2.e[2]
 }
 
 // -=

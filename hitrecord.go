@@ -18,20 +18,17 @@ type hitTableList struct {
 
 func (h *hitTableList) hitFunc(r ray, tMin float64, tMax float64, rec *hitRecord) (bool, *hitRecord) {
 
-	tmpRec := hitRecord{}
+
 	hitAnything := false
 	hit := false
 	closestSoFar := tMax
 
 	for i := 0; i < len(h.list); i++ {
 
-		hit, rec = h.list[i].hitFunc(r, tMin, closestSoFar, &tmpRec)
+		hit, rec = h.list[i].hitFunc(r, tMin, closestSoFar, rec)
 		if hit {
 			hitAnything = true
-			closestSoFar = tmpRec.t
-
-			rec = &tmpRec
-
+			closestSoFar = rec.t			
 		}
 
 	}

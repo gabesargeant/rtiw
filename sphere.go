@@ -5,9 +5,9 @@ import (
 )
 
 type sphere struct {
-	center   vec3
-	radius   float64
-	mat material
+	center vec3
+	radius float64
+	mat    *material
 }
 
 func (s *sphere) getCenter() vec3 {
@@ -17,7 +17,7 @@ func (s *sphere) getCenter() vec3 {
 func (s *sphere) sphere(cen vec3, r float64, m material) {
 	s.center = cen
 	s.radius = r
-	s.mat = m
+	s.mat = &m
 }
 
 func (s *sphere) hitFunc(r ray, tMin float64, tMax float64, rec *hitRecord) (bool, *hitRecord) {
@@ -28,6 +28,7 @@ func (s *sphere) hitFunc(r ray, tMin float64, tMax float64, rec *hitRecord) (boo
 	b := dot(oc, r.direction())
 	c := dot(oc, oc) - s.radius*s.radius
 	discriminant := b*b - a*c
+	rec.matPtr = *s.mat
 
 	if discriminant > 0 {
 		tmp := (-b - math.Sqrt(b*b-a*c)) / a

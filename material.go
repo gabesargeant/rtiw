@@ -13,19 +13,17 @@ type metal struct {
 	albedo vec3
 }
 
-func (m metal) metal(a vec3) {
+func (m *metal) metal(a vec3) {
 	m.albedo = a
 }
 
-func (l lambertain) lambertain(a vec3) {
+func (l *lambertain) lambertain(a vec3) {
 	l.albedo = a
 }
 
 func (l lambertain) scatter(rayIn ray, rec *hitRecord, attenuation vec3, scattered ray) (bool, ray, vec3) {
 	target := rec.p.plus(rec.normal.plus(randomInInitSphere()))
-	rr := ray{}
-	rr.ray(rec.p, target.minus(rec.p))
-	scattered = rr
+	scattered.ray(rec.p.minus(target),rec.p)
 	attenuation = l.albedo
 	return true, scattered, attenuation
 }
@@ -37,9 +35,7 @@ func reflect(v vec3, n vec3) vec3 {
 func (m metal) scatter(rayIn ray, rec *hitRecord, attenuation vec3, scattered ray) (bool, ray, vec3) {
 
 	reflected := reflect(unitVector(rayIn.direction()), rec.normal)
-	rr := ray{}
-	rr.ray(rec.p, reflected)
-	scattered = rr
+	scattered.ray(rec.p, reflected)
 	attenuation = m.albedo
 	hit := dot(scattered.direction(), rec.normal) > 0
 	return hit, scattered, attenuation
