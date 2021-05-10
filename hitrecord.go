@@ -26,7 +26,7 @@ func (h *hitTableList) hitFunc(r ray, tMin float64, tMax float64, rec *hitRecord
 	for i := 0; i < len(h.list); i++ {
 
 		hit, rec = h.list[i].hitFunc(r, tMin, closestSoFar, rec)
-		if hit {
+		if hit==true {
 			hitAnything = true
 			closestSoFar = rec.t			
 		}
