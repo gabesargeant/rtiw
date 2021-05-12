@@ -8,7 +8,7 @@ type hitRecord struct {
 }
 
 type hitTable interface {
-	hitFunc(r ray, tMin float64, tMax float64, rec *hitRecord) (bool, *hitRecord)
+	hitFunc(r ray, tMin float64, tMax float64, rec hitRecord) (bool, hitRecord)
 }
 
 type hitTableList struct {
@@ -16,19 +16,20 @@ type hitTableList struct {
 	rec  hitRecord
 }
 
-func (h *hitTableList) hitFunc(r ray, tMin float64, tMax float64, rec *hitRecord) (bool, *hitRecord) {
-
+func (h *hitTableList) hitFunc(r ray, tMin float64, tMax float64, rec hitRecord) (bool, hitRecord) {
 
 	hitAnything := false
 	hit := false
 	closestSoFar := tMax
+	tmprec := hitRecord{}
 
 	for i := 0; i < len(h.list); i++ {
-
-		hit, rec = h.list[i].hitFunc(r, tMin, closestSoFar, rec)
+		//fmt.Println(i)
+		hit, rec = h.list[i].hitFunc(r, tMin, closestSoFar, tmprec)
 		if hit==true {
 			hitAnything = true
-			closestSoFar = rec.t			
+			closestSoFar = rec.t
+			tmprec = rec			
 		}
 
 	}

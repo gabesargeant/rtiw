@@ -61,7 +61,7 @@ func outputImage(filename string) {
 	m4.metal(m4v)
 	s4.sphere(s4v, 0.5, &m4)
 
-	list := []hitTable{&s1,&s2, &s3}//,,, &s4}
+	list := []hitTable{&s1,&s2, &s3, &s4}
 
 	world.list = list
 	fmt.Println(len(world.list))
@@ -114,7 +114,7 @@ func outputImage(filename string) {
 
 func colour(r ray, world *hitTableList, depth int) vec3 {
 
-	rec := &hitRecord{}
+	rec := hitRecord{}
 	hit, rec := world.hitFunc(r, 0.001, math.MaxFloat64, rec)
 	//need to debut the type returned here, need to know the implementing material. I thin
 	if hit==true {
@@ -122,12 +122,17 @@ func colour(r ray, world *hitTableList, depth int) vec3 {
 		scattered := ray{}
 		attenuation := vec3{}
 
-
-		hit, scattered, attenuation = rec.matPtr.scatter(r, rec, attenuation, scattered)
+		//fmt.Println(rec.matPtr.getName())
+		if(rec.matPtr.getName() == "lambertain"){
+			fmt.Print("lambertain")
+		}
+		hit, scattered, attenuation = rec.matPtr.scatter(r, &rec, attenuation, scattered)
 
 		if depth < 50 && hit {
 			//tmp := 
-			return attenuation.mult(colour(scattered, world, depth+1))
+			c := colour(scattered, world, depth+1)
+			c= c.mult(attenuation)
+			return c
 		}
 
 		tmp := vec3{}
