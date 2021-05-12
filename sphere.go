@@ -29,15 +29,9 @@ func (s *sphere) hitFunc(r ray, tMin float64, tMax float64, rec hitRecord) (bool
 	a := dot(r.direction(), r.direction())
 	b := dot(oc, r.direction())
 	c := dot(oc, oc) - s.radius*s.radius
-	discriminant := b*b - a*c
-	l := s.mat.getName()
-	rec.matPtr = s.mat
-	if(l == "lambertain"){
-		//fmt.Println(rec.matPtr.getName())
-	}
-	
+	discriminant := (b*b) - (a*c)
 
-	
+	rec.matPtr = s.mat
 
 	if discriminant > 0 {
 		tmp := (-b - math.Sqrt(b*b-a*c)) / a

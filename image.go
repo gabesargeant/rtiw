@@ -39,7 +39,7 @@ func outputImage(filename string) {
 	s2v.vec3(0, -100.5, -1)
 	m2 := lambertain{}
 	m2v := vec3{}
-	m2v.vec3(0.8, 0.8, 0.0)
+	m2v.vec3(0.7, 0.8, 0.3)
 	m2.lambertain(m2v)
 	s2.sphere(s2v, 100, &m2)
 	
@@ -48,7 +48,7 @@ func outputImage(filename string) {
 	s3v.vec3(1, 0, -1)
 	m3 := metal{}
 	m3v := vec3{}
-	m3v.vec3(0.8, 0.6, 0.2)
+	m3v.vec3(0.8, 0.8, 0.8)
 	m3.metal(m3v)
 	s3.sphere(s3v, 0.5, &m3)
 	//
@@ -57,7 +57,7 @@ func outputImage(filename string) {
 	s4v.vec3(-1, 0, -1)
 	m4 := metal{}
 	m4v := vec3{}
-	m4v.vec3(1, 0.8, 0.8)
+	m4v.vec3(0.8, 0.2, 0.2)
 	m4.metal(m4v)
 	s4.sphere(s4v, 0.5, &m4)
 
